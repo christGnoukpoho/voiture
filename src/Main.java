@@ -37,6 +37,18 @@ abstract class Vehicule implements Louable {
     }
 
     public abstract double calculerPrixLocation();
+
+    @Override
+    public String toString() {
+        return
+
+                ", marque='" + marque + '\'' +
+                ", modele='" + modele + '\'' +
+                        "immatriculation='" + immatriculation + '\'' +
+                ", anneeMiseEnService=" + anneeMiseEnService +
+                ", kilometrage=" + kilometrage +
+                '}';
+    } 
 }
 
 // Classe Voiture
@@ -63,6 +75,17 @@ class Voiture extends Vehicule {
     @Override
     public void retourner() {
         setEstDisponible(true);
+     @Override
+    public String toString() {
+        return "Voiture{" +
+                "nombrePlaces=" + nombrePlaces +
+                ", typeCarburant='" + typeCarburant + '\'' +
+                ", immatriculation='" + immatriculation + '\'' +
+                ", marque='" + marque + '\'' +
+                ", modele='" + modele + '\'' +
+                ", anneeMiseEnService=" + anneeMiseEnService +
+                ", kilometrage=" + kilometrage +
+                '}';   
     }
 }
 
@@ -90,6 +113,18 @@ class Camion extends Vehicule {
     @Override
     public void retourner() {
         setEstDisponible(true);
+
+     @Override
+    public String toString() {
+        return "Camion{" +
+                "capaciteChargement=" + capaciteChargement +
+                ", nombreEssieux=" + nombreEssieux +
+                ", immatriculation='" + immatriculation + '\'' +
+                ", marque='" + marque + '\'' +
+                ", modele='" + modele + '\'' +
+                ", anneeMiseEnService=" + anneeMiseEnService +
+                ", kilometrage=" + kilometrage +
+                '}';   
     }
 }
 
@@ -115,6 +150,16 @@ class Client {
 
     public void supprimerLocation(Vehicule vehicule) {
         locationsEnCours.remove(vehicule);
+        
+        @Override
+    public String toString() {
+        return "Client{" +
+                "nom='" + nom + '\'' +
+                ", prenom='" + prenom + '\'' +
+                ", numeroPermis='" + numeroPermis + '\'' +
+                ", numeroTelephone='" + numeroTelephone + '\'' +
+                ", locationsEnCours=" + locationsEnCours +
+                '}';
     }
 }
 
@@ -159,6 +204,11 @@ class ParcAutomobile {
             }
         }
         return null;
+    }
+    void affvehicule(){
+        for (Vehicule m : vehicules){
+            System.out.println(m.toString());
+        }
     }
 }
 
@@ -237,6 +287,8 @@ public class Main {
         } else {
             System.out.println("Type de véhicule inconnu.");
         }
+        System.out.println("la liste des vehicules est: ");
+        parc.affvehicule();
     }
 
     private static void ajouterClient(Scanner scanner) {
@@ -249,13 +301,50 @@ public class Main {
         System.out.print("Numéro de téléphone : ");
         String numeroTelephone = scanner.nextLine();
         clients.add(new Client(nom, prenom, numeroPermis, numeroTelephone));
+        System.out.println("La liste des clients est: "+clients);
     }
 
     public static void louerVehicule(Scanner scanner) {
         // Implémentation du processus de location avec gestion des exceptions
+        System.out.println("Entrez la marque de la voiture :");
+        String marque = scanner.nextLine();
+        System.out.println("Entrez le modèle de la voiture :");
+        String modele = scanner.nextLine();
+        for (Vehicule p : parc.vehicules){
+            if (marque.equals(p.marque)){
+                System.out.println("Le prix de location est : " + p.calculerPrixLocation() + " euros.");
+
+                System.out.println("Voulez-vous louer cette voiture ? (oui/non)");
+                String reponse = scanner.nextLine();
+                if (reponse.equalsIgnoreCase("oui")) {
+                    p.setEstDisponible(false); // La voiture n'est plus disponible
+                    System.out.println("Vous avez loué la voiture avec succès !");
+                } else {
+                    System.out.println("La voiture n'a pas été louée.");
+                }
+            }
+        }
+
     }
+    
 
     public static void retournerVehicule(Scanner scanner) {
         // Implémentation du processus de retour de véhicule
+        System.out.print("Entrez l'immatriculation du véhicule à retourner : ");
+        String immatriculation = scanner.nextLine();
+
+        Vehicule vehicule = parc.trouverVehicule(immatriculation);
+        if (vehicule != null && !vehicule.isDisponible()) {
+            vehicule.retourner();
+            System.out.println("Vous avez retourné le véhicule avec succès !");
+        } else if (vehicule == null) {
+            System.out.println("Véhicule introuvable.");
+        } else {
+            System.out.println("Le véhicule est déjà disponible.");
+        }
     }
+
 }
+        
+    
+
